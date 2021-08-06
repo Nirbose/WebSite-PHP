@@ -40,7 +40,7 @@ class App
     public function run(ServerRequest $request): ResponseInterface
     {
         $uri = $request->getUri()->getPath();
-        if (!empty($uri) && $uri[-1] === "/") {
+        if (!empty($uri) && $uri[-1] === "/" && $uri !== "/") {
             return (new Response())
                 ->withStatus(301)
                 ->withHeader('Location', substr($uri, 0, -1));
