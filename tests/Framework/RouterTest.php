@@ -39,6 +39,18 @@ class RouteTest extends TestCase {
         $route = $this->router->match($request);
         $this->assertEquals('post.show', $route->getName());
         $this->assertEquals('hello', call_user_func_array($route->getCallback(), [$request]));
-        $this->assertEquals(['slug' => 'mon-slug', 'id' => '8'], $route->getParams());
+        $this->assertEquals(['slug' => 'mon-slug', 'id' => '1'], $route->getParams());
+
+        // Test Route not existe
+        $route = $this->router->match(new ServerRequest('GET', '/blog/mon_post-1'));
+        $this->assertEquals(null, $route);
+    }
+
+    public function testGeneratUri()
+    {
+        $this->router->get('/blog', function () { return 'hello'; }, 'post');
+        $this->router->get('/blog/{slug:[a-z0-9\-]+}-{id:\d+}', function () { return 'hello'; }, 'post.show');
+        $uri = $this->router->generateUri('post.show', ['slug' => 'mon-articles', 'id' => '5']);
+        $this->assertEquals('/blog/mon-articles-5', $uri);
     }
 }
